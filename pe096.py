@@ -56,6 +56,32 @@ class Board:
 			if len(self.board[idx]) > 1:
 				self.board[idx] = self.getpossibles(idx//9, idx%9)
 
-	# method for entering a number that automatically removes possibles
+	def checksolved(self):
+		return len([cell for cell in self.board if len(cell) != 1]) == 0
 
-	# method that calculates possibles for a given cell
+
+	# Enter a digit, removing conflicting possibles
+	def setdigit(self, r, c, digit):
+		idx = 9*r + c
+
+		# Make sure the digit is one of the possibles and that cell is not already solved
+		assert(len(self.board[idx]) > 1 and digit in self.board[idx])
+
+		rowidx = list(range(9*r,9*(r+1)))
+		colidx = list(range(c,81,9))
+
+		bxidx = r//3*3 *9 + c%3 * 3
+		boxidx = list(range(bxidx,bxidx+3)) + list(range(bxidx+9,bxidx+12)) + list(range(bxidx+18,bxidx+21))
+
+		#Remove from all affected cells
+		for i in rowidx + colidx + boxidx:
+			if i != idx and digit in self.board[i]:
+				self.board[i].remove(digit)
+
+		self.board[idx] = [digit]
+
+	def __str__(self):
+		res = ""
+		for i in range(9):
+			res += str(self.board[9*i:9*(i+1)]) + "\n\n"
+		return res
