@@ -1,3 +1,5 @@
+from copy import deepcopy as copy
+
 testboard = '''
 003020600
 900305001
@@ -8,6 +10,7 @@ testboard = '''
 002609500
 800203009
 005010300'''
+
 
 alldigits = range(1,10)
 
@@ -20,7 +23,11 @@ class Board:
 
 		self.board = [[int(char)] if char != "0" else list(alldigits) for char in "".join(boardstr.split("\n"))]
 
-		assert(len(self.board) == 81)
+	def __str__(self):
+		res = ""
+		for i in range(9):
+			res += str(self.board[9*i:9*(i+1)]) + "\n\n"
+		return res
 
 	# Get list of row contents, r is 0-indexed
 	def getrow(self, r):
@@ -59,7 +66,6 @@ class Board:
 	def checksolved(self):
 		return len([cell for cell in self.board if len(cell) != 1]) == 0
 
-
 	# Enter a digit, removing conflicting possibles
 	def setdigit(self, r, c, digit):
 		idx = 9*r + c
@@ -70,7 +76,7 @@ class Board:
 		rowidx = list(range(9*r,9*(r+1)))
 		colidx = list(range(c,81,9))
 
-		bxidx = r//3*3 *9 + c%3 * 3
+		bxidx = r//3*3 *9 + c//3*3
 		boxidx = list(range(bxidx,bxidx+3)) + list(range(bxidx+9,bxidx+12)) + list(range(bxidx+18,bxidx+21))
 
 		#Remove from all affected cells
@@ -80,8 +86,29 @@ class Board:
 
 		self.board[idx] = [digit]
 
-	def __str__(self):
-		res = ""
-		for i in range(9):
-			res += str(self.board[9*i:9*(i+1)]) + "\n\n"
-		return res
+def trySolve(b):
+
+	if b.checksolved():
+		# Done! Return solved board
+		return b
+
+	if not b.checkvalid():
+		# Invalid! Backtrack
+		return None
+
+	possiblenums = [len(cell) if len(cell) > 1 else 999 for cell in b.board]
+
+	idx = possiblenums.index(min(possiblenums))
+
+	for digit in b.board[idx]:
+		b_new = copy(b)
+
+		b_new.setdigit(idx//9, idx%9, digit)
+
+		res = trySolve(b_new)
+
+		if res != None:
+			return res
+
+	#Exhausted all options
+	return None
