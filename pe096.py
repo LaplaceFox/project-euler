@@ -46,6 +46,10 @@ class Board:
 		return self.board[idx:idx+3] + self.board[idx+9:idx+12] + self.board[idx+18:idx+21] 
 
 	def checkvalid(self):
+		for i in range(9):
+			if not (allUnique(self.getsolved(self.getrow(i))) and allUnique(self.getsolved(self.getcol(i))) and allUnique(self.getsolved(self.getcol(i)))):
+				return False
+
 		return [] not in self.board
 	
 	# Get values of solved cells in a given list
@@ -89,9 +93,12 @@ class Board:
 
 		self.initpossibles()
 
+def allUnique(lst):
+	return len(set(lst)) == len(lst)
+
 def trySolve(b):
-	print(b)
-	input()
+	#print(b)
+	#input()
 
 	if b.checksolved():
 		# Done! Return solved board
@@ -134,8 +141,6 @@ def solveProblem():
 
 		if b != None:
 			print("Solved Grid %s"%(name))
-			print(b)
-			input()
 			total += int("".join([str(x[0]) for x in b.board[:3]]))
 		else:
 			print("Failed on %s"%(name))
