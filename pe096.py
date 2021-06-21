@@ -1,16 +1,16 @@
 from copy import deepcopy as copy
 
-testboard = '''
-003020600
-900305001
-001806400
-008102900
-700000008
-006708200
-002609500
-800203009
-005010300'''
-
+failcase1 = '''
+200080300
+060070084
+030500209
+000105408
+000000000
+402706000
+301007040
+720040060
+004010003
+'''
 
 alldigits = range(1,10)
 
@@ -22,6 +22,7 @@ class Board:
 		# _ -> list containing char converted to int
 
 		self.board = [[int(char)] if char != "0" else list(alldigits) for char in "".join(boardstr.split("\n"))]
+		self.initpossibles()
 
 	def __str__(self):
 		res = ""
@@ -86,7 +87,11 @@ class Board:
 
 		self.board[idx] = [digit]
 
+		self.initpossibles()
+
 def trySolve(b):
+	print(b)
+	input()
 
 	if b.checksolved():
 		# Done! Return solved board
@@ -112,3 +117,27 @@ def trySolve(b):
 
 	#Exhausted all options
 	return None
+
+def solveProblem():
+	f = open("p096_sudoku.txt")
+	
+	total = 0
+
+	# Split into individual puzzles
+	puzzles = f.read().split("Grid")[1:]
+
+	for puzz in puzzles:
+		name = puzz[:3]
+		boardstr = puzz[3:]
+
+		b = trySolve(Board(boardstr))
+
+		if b != None:
+			print("Solved Grid %s"%(name))
+			print(b)
+			input()
+			total += int("".join([str(x[0]) for x in b.board[:3]]))
+		else:
+			print("Failed on %s"%(name))
+			return None
+	return total
