@@ -1,4 +1,5 @@
 from copy import deepcopy as copy
+from time import time
 
 failcase1 = '''
 200080300
@@ -126,6 +127,8 @@ def trySolve(b):
 	return None
 
 def solveProblem():
+	start = time()
+
 	f = open("p096_sudoku.txt")
 	
 	total = 0
@@ -145,4 +148,7 @@ def solveProblem():
 		else:
 			print("Failed on %s"%(name))
 			return None
+	
+	print("Finished in", time()-start, "seconds.", chr(7))
+
 	return total
