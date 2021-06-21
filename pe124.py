@@ -29,8 +29,10 @@ def unfactor(fact):
 	# [(5,2), (3,1), (2,2)] -> 5**2 * 3 * 2**2
 	return reduce(lambda a,b: a*b, [x[0]**x[1] for x in fact])
 
-def genFromRad(pf, hi):
+def genFromRad(pf, hi, output = False):
 	fact = [[x,1] for x in pf]
+
+	out = []
 
 	# Special case for only one prime factor
 	if len(fact) == 1:
@@ -42,7 +44,14 @@ def genFromRad(pf, hi):
 	ct = 0
 
 	while True:
-		ct += floor(log(hi/unfactor(fact), smallest))
+		unf = unfactor(fact)
+
+		toAdd = floor(log(hi/unf, smallest))
+		
+		if output:
+			out += [unf * smallest**i for i in range(1, toAdd + 1)]
+
+		ct += toAdd
 
 		#print(fact)
 		#print("Added", floor(log(hi/unfactor(fact), smallest)))
@@ -57,16 +66,34 @@ def genFromRad(pf, hi):
 			for i in range(len(fact)):
 				if fact[i][1] > 1:
 					if i+1 >= len(fact):
-						return ct # Done!
+						return (ct,out) if output else ct # Done!
 
 					fact[i][1] = 1 
 					fact[i+1][1] += 1 # Increment immediately after first non-one exponent, then break
-					done = True
 					break
 				else:
 					fact[i][1] = 1 # Reset
 
 
+goal = 10000
+seen = 1
+
+radical = 2
+
+while True:
+	#print("radical=%s, seen=%s"%(radical,seen))
+
+	if potentialRad(radical):
+		new = genFromRad(pFacts(radical),100000)
+
+		if seen+new < goal:
+			seen += new
+		else:
+			idx = goal - seen
+			print("Answer:", sorted(genFromRad(pFacts(radical),100000,True)[1])[idx-1])
+			break
+	
+	radical += 1
 
 
-#print("Finished in", time()-start, "seconds.", chr(7))
+print("Finished in", time()-start, "seconds.", chr(7))
