@@ -29,10 +29,10 @@ def megasieve(n):
     toSieve[0] = None
     toSieve[1] = None
 
-    for k in range(floor(sqrt(n+1))+1):
+    for k in range(math.floor(math.sqrt(n+1))+1):
         if toSieve[k] != None:
             toSieve[2*k::k] = [None]*len(toSieve[2*k::k])
-            print("tick",end=" ")
+            #print("tick",end=" ")
 
-    print()
+    #print()
     return list(filter(lambda x: x != None, toSieve))

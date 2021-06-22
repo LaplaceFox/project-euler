@@ -1,25 +1,32 @@
 from timeme import *
 from math import sqrt
+from primes import megasieve as sieve
 
 dbg = True
 
-def slow_pfactsum(n):
-	acc = 0 # Total of the factors we pull out
-	k = 2
-
-	while n > 1 and k <= sqrt(n):
-		while n % k == 0:
-			acc += k
-			n //= k
-		k += 1
-
-	if n > 1:
-		# Alternate break condition, where n has a large prime factor
-		acc += n
-
-	return acc
-
 def run():
-	pass
+
+	pfs = sieve(20_000_000)
+
+	dprint("Primes sieved.")
+
+	def pfactsum_range_factorial(n):
+		# Prime factor sum of n!
+		acc = 0
+
+		for pf in pfs:
+			if pf > n:
+				break
+
+			ppow = pf # Prime power
+			while ppow <= n:
+				acc += n // ppow * pf
+				ppow *= pf
+
+		return acc
+
+	prf = pfactsum_range_factorial #alias
+
+	return prf(20_000_000) - prf(15_000_000) - prf(5_000_000)
 
 timeme(run)
