@@ -19,57 +19,72 @@ def invEuclid(a,b):
 
     return n % modulus
 
-def run():
+def bigones():
+    inc = 1504170715041707
+    modulus  = 4503599627370517
+
+    total = inc
+
+    inverse = invEuclid(modulus, inc)
+
+    def inv(n):
+        return (n * inverse) % modulus
+
+    current = inc
+    mn = current
+
+    while True:
+        current = (current + inc) % modulus
+
+        if current < mn:
+            total += current
+            print("Coin:", current, "at", inv(current))
+
+            # Mining time!
+            diff = mn - current
+
+            while current > diff:
+                current -= diff
+                total += current
+                idx = inv(current)
+                print("Coin:", current, "at", inv(current))
+
+            mn = current
+
+        if current == 15806432:
+            return total
+
+
+def smallones():
     inc = 1504170715041707
     modulus  = 4503599627370517
 
     inverse = invEuclid(modulus, inc)
 
-    total = inc
-    mn = total
+    def inv(n):
+        return (n * inverse) % modulus
 
-    current = total
+    biggest = 1
+    idx = inv(1)
 
-    # Loop for initial mining
-    while mn > 10**9:
-        current = (current + inc) % modulus
+    total = 1
 
-        if current < mn:
-            # Found a coin!
-            print("Coin:", current)
+    current = 1
+
+    while current < inc:
+
+        current += 1
+
+        # If we find next largest number we'd hit earlier
+        if inv(current) < idx:
             total += current
+            idx = inv(current)
+            print("Coin:", current, "at", idx)
+            
+            if current == 15806432:
+                return total - 15806432 # Don't double count
 
-            diff = mn - current
-
-            while diff < current:
-                current -= diff # Next coin
-                print("Coin:", current)
-                total += current
-
-            mn = current
-
-    # Goal is now "small"
-    while mn > 0:
-        best_n = (mn * inverse) % modulus
-
-        for test in range(mn-1,0,-1):
-            n = (test * inverse) % modulus
-
-            if n > best_n:
-                best_n = n
-
-                current = test
-                diff = mn - current
-
-                while diff < current:
-                    current -= diff # Next coin
-                    print("Coin:", current)
-                    total += current
-
-                mn = current
-                break
-
-    return total
-
+def run():
+    return smallones() + bigones()
 
 timeme(run)
