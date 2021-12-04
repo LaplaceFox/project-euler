@@ -14,7 +14,9 @@ def nextPrime(n):
         if isPrime(n):
             return n
 
-def sieve(size):
+def sieve(size, start=2 , pile=[]):
+    # Sieve of Erosthastenes, where start is the start of the range and pile is all primes less than start
+
     toSieve = range(2,size)
     pile = []
     while len(toSieve) > 0:
