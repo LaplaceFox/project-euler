@@ -1,4 +1,5 @@
 from math import *
+from timeme import timeme
 
 # Distance from x to nearest integer
 def intdist(x):
@@ -101,4 +102,4 @@ def solution():
 
     return half_bm - blancmangesum(p) - under_circ
 
-print(solution())
+timeme(solution)

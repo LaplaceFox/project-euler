@@ -1,4 +1,5 @@
 from math import *
+from timeme import timeme
 
 def period_len(n):
     # List of seen (k,d) pair
