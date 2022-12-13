@@ -19,7 +19,7 @@ def divCount(n):
 
 start = time()
 
-for i in range(2,10**7):
+for i in range(2,10**6):
 	divCount(i)
 
 print("Finished in", time()-start, "seconds.", chr(7))
