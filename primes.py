@@ -35,7 +35,7 @@ def sieve(lo, hi, pile=[]):
         toSieve = list(toSieve)
         p = toSieve.pop(0)
 
-        print(p)
+        #print(p)
         if p*p > hi:
             pile.extend(toSieve)
             in_range.extend(toSieve)
