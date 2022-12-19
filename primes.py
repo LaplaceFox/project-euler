@@ -1,3 +1,4 @@
+from copy import copy
 import math
 
 def isPrime(n):
@@ -14,17 +15,36 @@ def nextPrime(n):
         if isPrime(n):
             return n
 
-def sieve(size, start=2 , pile=[]):
-    # Sieve of Erosthastenes, where start is the start of the range and pile is all primes less than start
+# Sieve of Erosthastenes, over range [lo,hi] and pile is all primes less than lo
+# Returns all newly found primes in range, destructively modifies pile
+def sieve(lo, hi, pile=[]):
+    # lo is at least 2
+    lo = max(lo,2)
 
-    toSieve = range(2,size)
-    pile = []
+    toSieve = range(lo,hi+1)
+
+    # List of all primes in desired range
+    in_range = []
+
+    for p in pile:
+        if lo <= p <= hi:
+            in_range.append(p)
+        toSieve = list(filter(lambda x: x%p != 0, toSieve))
+
     while len(toSieve) > 0:
         toSieve = list(toSieve)
         p = toSieve.pop(0)
+
+        print(p)
+        if p*p > hi:
+            pile.extend(toSieve)
+            in_range.extend(toSieve)
+            return in_range
+
         pile.append(p)
+        in_range.append(p)
         toSieve = list(filter(lambda x: x%p != 0, toSieve))
-    return pile
+    return in_range
 
 def megasieve(n):
     toSieve = list(range(n+1))
