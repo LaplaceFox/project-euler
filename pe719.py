@@ -22,6 +22,9 @@ def splitsum(n, tgt):
         if left > tgt: # Already got too big
             return False
 
+        if right < tgt-left:
+            continue
+
         if splitsum(right, tgt-left):
             return True
 
