@@ -37,7 +37,9 @@ def solution():
         if i % 10000 == 0:
             print("->" + str(i//10000))
 
-        if splitsum(i**2, i):
+        # Idea from forum: number splitting preserves digit sum, so if a number
+        # is an S-number, x = x^2 must be true mod 9 (so x is 0 or 1 mod 9)
+        if i % 9 in [0,1] and splitsum(i**2, i):
             #print(True)
             total += i**2
 
