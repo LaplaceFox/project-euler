@@ -13,6 +13,9 @@ def dprint(x):
 def timeme(fn):
 	start = time()
 
-	print(fn())
+	result = fn()
+	print(result)
 
 	print("Finished in", time()-start, "seconds.", chr(7))
+
+	return result
