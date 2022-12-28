@@ -1,5 +1,7 @@
 from timeme import timeme
 
+# Reference implementations
+
 def ord_partitions(n):
     if n == 0:
         return []
@@ -26,7 +28,9 @@ def num_pal_twopals(n):
 
     return ct
 
-def twopal_vector_iter(n):
+# # # Faster stuff
+
+def twopal_fast(n):
     (a,b,c,d) = (1,0,0,0)
 
     for i in range(n-1):
@@ -34,8 +38,23 @@ def twopal_vector_iter(n):
     
     return b+c
 
-for i in range(1,24):
-    x1 = timeme(lambda: num_twopals(i))
-    x2 = timeme(lambda: twopal_vector_iter(i))
+def pal_twopal_fast(n):
+    k = n // 2
 
-    assert(x1 == x2)
+    res = 0
+
+    for i in range(k+1):
+        res += twopal_fast(i)
+    
+    if n % 2 == 0:
+        res -= twopal_fast(k-1)
+        res += 2**(k-2)
+
+    return res
+
+def test():
+    for i in range(1,24):
+        x1 = timeme(lambda: num_twopals(i))
+        x2 = timeme(lambda: twopal_fast(i))
+
+        assert(x1 == x2)
