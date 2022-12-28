@@ -52,8 +52,29 @@ def pal_twopal_fast(n):
 
     return res
 
+
+def pal_twopals_seq():
+    k = 20
+
+    even = pal_twopal_fast(2*k)
+    odd = pal_twopal_fast(2*k+1)
+
+    while True:
+        print(2*k)
+        print(2*k+1)
+
+        even += twopal_fast(k+1) - twopal_fast(k) + twopal_fast(k-1) + 2**(k-2)
+        odd += twopal_fast(k+1)
+
+        if even % 1000000 == 0:
+            return 2*k
+        if odd % 1000000 == 0:
+            return 2*k+1
+
+        k += 1
+
 def test():
-    for i in range(1,24):
+    for i in range(1,20):
         x1 = timeme(lambda: num_twopals(i))
         x2 = timeme(lambda: twopal_fast(i))
 
