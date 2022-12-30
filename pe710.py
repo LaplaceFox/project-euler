@@ -30,12 +30,32 @@ def num_pal_twopals(n):
 
 # # # Faster stuff
 
-def twopal_fast(n):
-    (a,b,c,d) = (1,0,0,0)
+MILLION = 1000000
 
-    for i in range(n-1):
-        (a,b,c,d) = (a+d, a, b+2*c, b+d)
+vector_memo = {}
+
+vector_memo[0] = (1,0,0,0)
+vector_memo[1] = (1,0,0,0)
+
+def twopal_vector(n):
+    if n in vector_memo:
+        return vector_memo[n]
     
+    (a,b,c,d) = twopal_vector(n-1)
+
+    a %= MILLION
+    b %= MILLION
+    c %= MILLION
+    d %= MILLION
+
+    res = (a+d, a, b+2*c, b+d)
+    vector_memo[n] = res
+    
+    return res
+
+def twopal_fast(n):
+    (_,b,c,_) = twopal_vector(n)
+
     return b+c
 
 def pal_twopal_fast(n):
@@ -50,8 +70,7 @@ def pal_twopal_fast(n):
         res -= twopal_fast(k-1)
         res += 2**(k-2)
 
-    return res
-
+    return res % MILLION
 
 def pal_twopals_seq():
     k = 20
@@ -60,15 +79,20 @@ def pal_twopals_seq():
     odd = pal_twopal_fast(2*k+1)
 
     while True:
-        print(2*k)
-        print(2*k+1)
+        print(2*k,": ", even)
+        print(2*k+1,": ",odd)
+
+        input()
 
         even += twopal_fast(k+1) - twopal_fast(k) + twopal_fast(k-1) + 2**(k-2)
         odd += twopal_fast(k+1)
 
-        if even % 1000000 == 0:
+        even %= MILLION
+        odd %= MILLION
+
+        if even % MILLION == 0:
             return 2*k
-        if odd % 1000000 == 0:
+        if odd % MILLION == 0:
             return 2*k+1
 
         k += 1
@@ -79,3 +103,5 @@ def test():
         x2 = timeme(lambda: twopal_fast(i))
 
         assert(x1 == x2)
+
+timeme(pal_twopals_seq)
