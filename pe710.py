@@ -30,7 +30,7 @@ def num_pal_twopals(n):
 
 # # # Faster stuff
 
-MILLION = 1000000
+MODULUS = 1000000
 
 vector_memo = {}
 
@@ -43,10 +43,10 @@ def twopal_vector(n):
     
     (a,b,c,d) = twopal_vector(n-1)
 
-    a %= MILLION
-    b %= MILLION
-    c %= MILLION
-    d %= MILLION
+    a %= MODULUS
+    b %= MODULUS
+    c %= MODULUS
+    d %= MODULUS
 
     res = (a+d, a, b+2*c, b+d)
     vector_memo[n] = res
@@ -70,7 +70,7 @@ def pal_twopal_fast(n):
         res -= twopal_fast(k-1)
         res += 2**(k-2)
 
-    return res % MILLION
+    return res % MODULUS
 
 def pal_twopals_seq():
     k = 20
@@ -79,23 +79,67 @@ def pal_twopals_seq():
     odd = pal_twopal_fast(2*k+1)
 
     while True:
-        print(2*k,": ", even)
-        print(2*k+1,": ",odd)
+        #print(2*k,": ", even)
+        #assert(pal_twopal_fast(2*k) == even)
+        #print(2*k+1,": ",odd)
+        #assert(pal_twopal_fast(2*k+1) == odd)
 
-        input()
+        if even % MODULUS == 0:
+            print("Found!")
+            return 2*k
+        if odd % MODULUS == 0:
+            print("Found!")
+            return 2*k+1
+
+        #input()
 
         even += twopal_fast(k+1) - twopal_fast(k) + twopal_fast(k-1) + 2**(k-2)
         odd += twopal_fast(k+1)
 
-        even %= MILLION
-        odd %= MILLION
-
-        if even % MILLION == 0:
-            return 2*k
-        if odd % MILLION == 0:
-            return 2*k+1
+        even %= MODULUS
+        odd %= MODULUS
 
         k += 1
+
+def pal_twopals_seq_faster():
+    k = 20
+
+    even = pal_twopal_fast(2*k)
+    odd = pal_twopal_fast(2*k+1)
+
+    vprev = twopal_vector(k-1)
+    vcurr = twopal_vector(k)
+    vnext = twopal_vector(k+1)
+
+    powtwo = 2**(k-2)
+
+    while True:
+        tkprev = vprev[1] + vprev[2]
+        tkcurr = vcurr[1] + vcurr[2]
+        tknext = vnext[1] + vnext[2]
+
+        even %= MODULUS
+        odd %= MODULUS
+
+        even += tknext - tkcurr + tkprev + powtwo
+        odd += tknext
+
+        vprev = vcurr
+        vcurr = vnext
+
+        (a,b,c,d) = vnext
+        vnext = (a+d % MODULUS, a % MODULUS, b+2*c % MODULUS, b+d % MODULUS)
+
+        powtwo = powtwo*2 % MODULUS
+
+        k += 1
+
+        if even % MODULUS == 0:
+            print("Found!")
+            return 2*k
+        if odd % MODULUS == 0:
+            print("Found!")
+            return 2*k+1
 
 def test():
     for i in range(1,20):
@@ -104,4 +148,6 @@ def test():
 
         assert(x1 == x2)
 
-timeme(pal_twopals_seq)
+timeme(pal_twopals_seq_faster)
+
+# answer: 1275000
