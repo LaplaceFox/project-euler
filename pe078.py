@@ -1,35 +1,46 @@
-memo = {}
+from timeme import timeme
 
-def partition(n,k):
-    if (n,k) in memo:
-        return memo[(n,k)]
+def penta_low(k):
+    return k * (3*k - 1) / 2
 
-    # Number of partitions of n object with max group size k
-    if n <= 1:
-        return 1
-    if k == 1:
-        return 1
-    else:
-        # Sum F(n-i, i) from 1 to k
-        result = sum([partition(n-i,min(n-i,i)) for i in range(1,k+1)]) % 1000000
-        memo[(n,k)] = result
-        return result
+def penta_high(k):
+    return k * (3*k + 1) / 2
 
-# Key n is sum of part(1,1) + ... + part(n,n)
-partitionsums = {0:1}
+memo = {0:1}
+
+def partition(n):
+    if n < 0:
+        return 0
+
+    if n in memo:
+        return memo[n]
+
+    result = 0
+
+    k = 1
+
+    while True:
+        a = penta_low(k)
+        b = penta_high(k)
+        
+        if n-a < 0:
+            break
+
+        sign = (-1)**(k%2 + 1)
+
+        result += sign * (partition(n-a) + partition(n-b))
+
+        k += 1
+    
+    memo[n] = result
+    return result
 
 def run():
     n = 1
+
     while True:
-        result = partitionsums[n//2] + sum([partition(n-i,i) for i in range(1, (n-1)//2 + 1)])
-        partitionsums[n] = (result + partitionsums[n-1]) % 1000000
-        #input()
-
-        result %= 1000000
-
-        print("(%i,%i): %i"%(n,n,result))
-        if result == 0:
-            print(n)
-            print(chr(7))
-            break
+        if partition(n) % 1000000 == 0:
+            return n
         n += 1
+
+timeme(run)
