@@ -1,30 +1,74 @@
 from primes import megasieve
 
-def totient(n, primelist):
-    if n in primelist:
-        return n-1
-
-    tot = 1
-
-    ind = 0
-    while n > 1:
-        p = primelist[ind]
-        ct = 0
-        while n % p == 0:
-            ct += 1
-            n //= p
-        if ct > 0:
-            tot *= p**(ct-1) * (p-1)
-        ind += 1
+# Return list of all 1 < n < bound such that n has prime factors pfacts
+def with_radical(pfacts,bound):
+    found = []
     
-    return tot
+    vec = [1] * len(pfacts)
 
-def solution():
-    n = 10**7
+    # Already too big?
+    if get_val(pfacts, vec) >= bound:
+        return found
 
-    primelist = megasieve(n//2)
+    while get_val(pfacts,vec) < bound:
+        val = get_val(pfacts, vec)
+        while val < bound:
+            # Increment smallest factor's exponent
+            found.append(val)
+            vec[0] += 1
+            val = get_val(pfacts, vec)
 
-    for i in range(1,n):
-        tot = totient(i,primelist)
-        if i % 1000 == 0:
-            print(i, tot)
+        # Rollover
+        for i in range(len(vec)+1):
+            # Overflow
+            if i == len(vec):
+                return found
+
+            if vec[i] > 1:
+                vec[i] = 1
+            else:
+                vec[i] += 1
+                break
+
+    return found
+
+def get_val(pfacts,vec):
+    val = 1
+    for i in range(len(vec)):
+        val *= pfacts[i] ** vec[i]
+    
+    return val
+
+def unique_facts(n, primelist):
+    res = []
+    i = 0
+    for p in primelist:
+        if n % p == 0:
+            res.append(p)
+        
+        while n % p == 0:
+            n //= p
+
+        if n == 1:
+            return res
+        
+    return res
+
+def unique_radicals(bound):
+    primelist = megasieve(bound)
+
+    to_check = list(range(bound))
+
+    # Ignore 0 and 1
+    to_check[0:2] = [None]*2
+
+    for i in to_check:
+        if i == None:
+            continue
+
+        with_rad = with_radical(unique_facts(i, primelist), bound)
+
+        for k in with_rad[1:]:
+            to_check[k] = None
+        
+    return list(filter(lambda x: x != None, to_check))
