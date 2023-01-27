@@ -1,11 +1,8 @@
 from timeme import timeme
 
+# When `a` is even, best remainder is a*(a-2)
+# When `a` is odd, best remainder is a*(a-1)
 def solution():
-    tot = 0
-
-    for a in range(3,1001):
-        rems = [2 if n%2 == 0 else (2*n*a)%(a**2) for n in range(2*a)]
-        tot += max(rems)
-    return tot
+    return sum([a*(a-(2-a%2)) for a in range(3,1001)])
 
 timeme(solution)
