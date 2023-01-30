@@ -1,3 +1,4 @@
+from itertools import *
 from timeme import timeme
 
 # All binary partitions of list
@@ -55,16 +56,14 @@ def consecutives_from_one(L):
 def solution():
     best = 0
 
-    for a in range(0,10):
-        for b in range(a,10):
-            for c in range(b,10):
-                for d in range(c,10):
-                    digits = [a,b,c,d]
-                    res = consecutives_from_one(arith_exp_values(digits))
+    for digits in combinations(range(10),4):
+        digits = list(digits)
+        
+        res = consecutives_from_one(arith_exp_values(digits))
 
-                    if res > best:
-                        best = res
-                        bestdigs = digits
+        if res > best:
+            best = res
+            bestdigs = digits
 
     return bestdigs
 
