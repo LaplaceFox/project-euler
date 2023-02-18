@@ -4,7 +4,7 @@ from timeme import timeme
 
 primelist = megasieve(50)
 
-def prime_factorization(n):
+def prime_factorization(n, primelist):
     res = []
 
     for i in range(len(primelist)):
@@ -33,7 +33,7 @@ factorial_pfacts = {0:[]}
 def populate_dict():
     acc = []
     for i in range(51):
-        acc = add_elementwise(acc,prime_factorization(i),0)
+        acc = add_elementwise(acc,prime_factorization(i, primelist),0)
         factorial_pfacts[i] = acc
 
 populate_dict()
