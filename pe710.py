@@ -148,6 +148,7 @@ def test():
 
         assert(x1 == x2)
 
-timeme(pal_twopals_seq_faster)
+if __name__ == '__main__':
+    timeme(pal_twopals_seq_faster)
 
 # answer: 1275000
