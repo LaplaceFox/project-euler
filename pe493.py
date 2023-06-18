@@ -4,7 +4,7 @@ from pe710 import ord_partitions
 
 def unordered_partitions(n):
     # Sort all partitions, make hashable, then deduplicate
-    return list(set([tuple(sorted(P)) for P in ord_partitions(20)]))
+    return list(set([tuple(sorted(P)) for P in ord_partitions(n)]))
 
 def solution():
     color_profiles = [profile for profile in unordered_partitions(20) if len(profile) <= 7 and max(profile) <= 10]
