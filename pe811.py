@@ -31,18 +31,6 @@ def alt(n):
 
 ##### ACTUAL SOLUTION #####
 
-# b^e mod m
-def powmod(b,e,m):
-    acc = 1
-    while e > 0:
-        if e % 2 == 1:
-            e -= 1
-            acc = (acc * b) % m
-        else:
-            e //= 2
-            b = (b * b) % m
-    return acc
-
 # H function with padding P, exponent e, mod m
 def H(P,e,m):
     run_lens = []
@@ -62,7 +50,7 @@ def H(P,e,m):
 
     f = 8 # factor to build solution
     for r in run_lens:
-        res *= powmod(f,r,m) % m
+        res *= pow(f,r,m) % m
         f = (3 + 5*f) % m
     
     return res % m
