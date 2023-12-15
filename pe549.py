@@ -5,7 +5,7 @@ from timeme import timeme
 
 # Smallest factorial that has p^k as a factor
 def prime_power_s(p,k):
-    if k == 1 or k == 2:
+    if k <= p:
         return k*p
 
     n = 0
@@ -24,6 +24,29 @@ def prime_power_s(p,k):
 
     return res * p
 
+def sieve_solution(n):
+    primelist = megasieve(n)
+
+    small_primes = [p for p in primelist if p**2 <= n]
+    big_primes = [p for p in primelist if p**2 > n]
+
+    total = 0
+
+    to_sieve = [0]*(n+1)
+    
+    pairs = [(prime_power_s(p,k),p**k) for p in small_primes for k in range(1,floor(log(n,p))+1)]
+
+    pairs.sort()
+
+    for (x,gap) in pairs:
+        to_sieve[gap::gap] = [x]*len(to_sieve[gap::gap])
+
+    for p in big_primes:
+        to_sieve[p::p] = [0]*len(to_sieve[p::p])
+        total += p * (n//p)
+
+    return total + sum(to_sieve)
+
 def list_dict_insert(D, k, v):
     if k in D:
         D[k].append(v)
@@ -33,12 +56,8 @@ def list_dict_insert(D, k, v):
 def S(n):
     primelist = megasieve(n)
 
-    print("primes found")
-
     small_primes = [p for p in primelist if p**2 <= n]
     big_primes = [p for p in primelist if p**2 > n]
-
-    print("primes sorted")
 
     total = 0
 
@@ -86,4 +105,7 @@ def S(n):
 def solution():
     return S(10**8)
 
-timeme(solution)
+def sieve_attempt():
+    return sieve_solution(10**8)
+
+timeme(sieve_attempt)
